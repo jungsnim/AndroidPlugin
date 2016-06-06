@@ -11,11 +11,8 @@ import android.util.Log;
 import com.google.android.gms.gcm.GcmPubSub;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
-import com.unity3d.player.UnityPlayer;
 
 import java.io.IOException;
-
-import static com.unity3d.player.UnityPlayer.*;
 
 public class RegistrationIntentService extends IntentService {
 
@@ -69,7 +66,7 @@ public class RegistrationIntentService extends IntentService {
 
     /**
      * Persist registration to third-party servers.
-     *
+     * <p/>
      * Modify this method to associate the user's GCM registration token with any server-side account
      * maintained by your application.
      *

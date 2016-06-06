@@ -8,24 +8,19 @@ import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.unity3d.player.UnityPlayer;
 import com.unity3d.player.UnityPlayerNativeActivity;
 
-import java.io.IOException;
-
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-
 public class MainActivity extends UnityPlayerNativeActivity {
 
-    private  boolean isReceiverRegistered;
-    private BroadcastReceiver mRegistrationBroadcastReceiver;
+    static final int RC_REQUEST = 10001;
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private static final String TAG = "MainActivity";
-
-    static final int RC_REQUEST = 10001;
     public static String SENDER_ID = "1008495205304";
+    private boolean isReceiverRegistered;
+    private BroadcastReceiver mRegistrationBroadcastReceiver;
     //private GoogleCloudMessaging gcm;
     //private String regid;
     //IabHelper mHelper;
@@ -54,10 +49,10 @@ public class MainActivity extends UnityPlayerNativeActivity {
             @Override
             public void onReceive(Context context, Intent intent) {
                 String action = intent.getAction();
-                if(action.equals(QuickstartPreferences.REGISTRATION_COMPLETE)){
+                if (action.equals(QuickstartPreferences.REGISTRATION_COMPLETE)) {
                     // 액션이 COMPLETE일 경우
                     String token = intent.getStringExtra("token");
-                    UnityPlayer.UnitySendMessage("AndroidPlugin","OnAndroidToken",token);
+                    UnityPlayer.UnitySendMessage("AndroidPlugin", "OnAndroidToken", token);
                 }
 
                 //if(mRegistrationBroadcastReceiver == null)
@@ -73,7 +68,7 @@ public class MainActivity extends UnityPlayerNativeActivity {
         //String base64EncodedPublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAlOk9W0nl5AlnjWFBqPk/yc+Gsod6olVPO77ZC4UBULYmTb+vT5lEJrKgENdK6xWdEcUdfSxQH1hLeX3u/edjhp1K1SNz/wE5S1ote9vBACxMOknndM2kjYvpqsIz0Bq8xhXZFYL8HSLmyUrNCXQXdzkQNuQ17nWgbnfYS33Y8sDrz16peZyE/N55IDWON9I+oFgsdj2OUpS1tJyCMW5ZYlbVZhoV0BkSrytcN5L9TRAjlRrwSG89n+V1NMW9k1K8bp9SMR26INHvMf4o3uVZndjCq40xSqygMfbq8Zu/bAxgq0ZUD7aZ84cbvTR16XcD99CSd8dt0FPxH1bH+LAHqQIDAQAB";
 
         // Create the helper, passing it our context and the public key to verify signatures with
-       // mHelper = new IabHelper(this, base64EncodedPublicKey);
+        // mHelper = new IabHelper(this, base64EncodedPublicKey);
 
         // enable debug logging (for a production application, you should set this to false).
        /* mHelper.enableDebugLogging(true);
@@ -95,15 +90,13 @@ public class MainActivity extends UnityPlayerNativeActivity {
     }
 
     @Override
-    protected void onResume()
-    {
+    protected void onResume() {
         super.onResume();
         registerReceiver();
     }
 
     @Override
-    protected void onPause()
-    {
+    protected void onPause() {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
         isReceiverRegistered = false;
         super.onPause();
@@ -117,8 +110,8 @@ public class MainActivity extends UnityPlayerNativeActivity {
         //mHelper = null;
     }
 
-    private void registerReceiver(){
-        if(!isReceiverRegistered) {
+    private void registerReceiver() {
+        if (!isReceiverRegistered) {
             LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
                     new IntentFilter(QuickstartPreferences.REGISTRATION_COMPLETE));
             isReceiverRegistered = true;
