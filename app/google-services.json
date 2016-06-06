@@ -1,0 +1,44 @@
+{
+  "project_info": {
+    "project_number": "1008495205304",
+    "project_id": "api-project-1008495205304"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1008495205304:android:1e730d28db06ed94",
+        "android_client_info": {
+          "package_name": "com.scwanna.jangki2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1008495205304-4pg8dh4rd4k53gu45fmilv8eclp8d3r6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.scwanna.jangki2",
+            "certificate_hash": "375B5F23E398C521F545F11B981DAD54401A2436"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBaE45c1HISdpFJoWDCkyWtdW4pvydSFlo"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
