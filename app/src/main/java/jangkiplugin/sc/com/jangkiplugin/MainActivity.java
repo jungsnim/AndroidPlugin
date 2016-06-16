@@ -11,16 +11,17 @@ import android.util.Log;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.unity3d.player.UnityPlayer;
+import com.unity3d.player.UnityPlayerActivity;
 import com.unity3d.player.UnityPlayerNativeActivity;
 
-public class MainActivity extends UnityPlayerNativeActivity {
+public class MainActivity extends UnityPlayerActivity {
 
     static final int RC_REQUEST = 10001;
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private static final String TAG = "MainActivity";
     public static String SENDER_ID = "1008495205304";
-    private boolean isReceiverRegistered;
-    private BroadcastReceiver mRegistrationBroadcastReceiver;
+    private boolean isReceiverRegistered = false;
+
     //private GoogleCloudMessaging gcm;
     //private String regid;
     //IabHelper mHelper;
@@ -41,28 +42,35 @@ public class MainActivity extends UnityPlayerNativeActivity {
         return true;
     }
 
+    private BroadcastReceiver mRegistrationBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            Log.d("GCMTestTag", "AndroidPlugin:onReceive ");
+            if (action.equals(QuickstartPreferences.REGISTRATION_COMPLETE)) {
+                // 액션이 COMPLETE일 경우
+                String token = intent.getStringExtra("token");
+                Log.d("GCMTestTag", "AndroidPlugin:OnAndroidToken= " + token);
+                UnityPlayer.UnitySendMessage("AndroidPlugin", "OnAndroidToken", token);
+            }
+
+            //if(mRegistrationBroadcastReceiver == null)
+            //    RegsterGcmToken();
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                String action = intent.getAction();
-                if (action.equals(QuickstartPreferences.REGISTRATION_COMPLETE)) {
-                    // 액션이 COMPLETE일 경우
-                    String token = intent.getStringExtra("token");
-                    UnityPlayer.UnitySendMessage("AndroidPlugin", "OnAndroidToken", token);
-                }
+        Log.d("GCMTestTag", "Resume");
+        registerReceiver();
 
-                //if(mRegistrationBroadcastReceiver == null)
-                //    RegsterGcmToken();
-            }
-        };
         if (checkPlayServices()) {
             // Start IntentService to register this application with GCM.
             Intent intent = new Intent(this, RegistrationIntentService.class);
             startService(intent);
+            Log.d("GCMTestTag", "startService:RegistrationIntentService");
         }
         //결제 관련...
         //String base64EncodedPublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAlOk9W0nl5AlnjWFBqPk/yc+Gsod6olVPO77ZC4UBULYmTb+vT5lEJrKgENdK6xWdEcUdfSxQH1hLeX3u/edjhp1K1SNz/wE5S1ote9vBACxMOknndM2kjYvpqsIz0Bq8xhXZFYL8HSLmyUrNCXQXdzkQNuQ17nWgbnfYS33Y8sDrz16peZyE/N55IDWON9I+oFgsdj2OUpS1tJyCMW5ZYlbVZhoV0BkSrytcN5L9TRAjlRrwSG89n+V1NMW9k1K8bp9SMR26INHvMf4o3uVZndjCq40xSqygMfbq8Zu/bAxgq0ZUD7aZ84cbvTR16XcD99CSd8dt0FPxH1bH+LAHqQIDAQAB";
@@ -97,21 +105,29 @@ public class MainActivity extends UnityPlayerNativeActivity {
 
     @Override
     protected void onPause() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
-        isReceiverRegistered = false;
+
         super.onPause();
+        unRegisterReceiver();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-
+        unRegisterReceiver();
         //if (mHelper != null) mHelper.dispose();
         //mHelper = null;
     }
 
+    private void unRegisterReceiver()
+    {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
+        isReceiverRegistered = false;
+        Log.d("GCMTestTag", "onPause");
+    }
+
     private void registerReceiver() {
         if (!isReceiverRegistered) {
+            Log.d("GCMTestTag", "registerReceiver");
             LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
                     new IntentFilter(QuickstartPreferences.REGISTRATION_COMPLETE));
             isReceiverRegistered = true;
